@@ -1,3 +1,4 @@
+const { raw } = require("body-parser");
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
@@ -19,6 +20,14 @@ app.use("/dogs", (req, res, next) => {
 next();
 });
 
+const verifyPassword = function (req, res, next){
+    const { password } = req.query;
+    if (password === "nugget"){
+        next();
+    }
+    res.send("sorry, WRONG password");  
+};
+
 
 
 app.get("/", (req, res) =>{
@@ -27,13 +36,17 @@ app.get("/", (req, res) =>{
 });
 
 app.get("/dogs", (req,res)=>{
-    res.ststus(404).send("woOF wOOf!")
+    res.send("woOF wOOf!")
+});
+
+app.get("/secret", verifyPassword, (req,res) => {
+    res.send("Hello! this is the secret page!");
 });
 
 
 
 app.use((req,res) =>{
-    res.send("NOT FOUND");
+    res.status(404).send("NOT FOUND");
 });
 
 
